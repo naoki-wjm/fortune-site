@@ -1,0 +1,32 @@
+{
+  "id": "rune",
+  "name": "ルーン（エルダーフサルク）",
+  "has_reversed": "mixed",
+  "cards": [
+    {"name": "フェオ", "has_reversed": true, "keyword": "財産・報酬・実り", "meaning_upright": "家畜や財産に関わること、地道な努力による目標達成、幸せな家族、繁栄などを暗示する", "meaning_reversed": "不安定な状態、計画の失敗、浪費、自惚れ、別離などの暗示"},
+    {"name": "ウル", "has_reversed": true, "keyword": "一途・果敢・野生", "meaning_upright": "野牛、男性的、勇敢、挑戦、強さなどを暗示する", "meaning_reversed": "優柔不断、自意識過剰、不安、不健康、目標を見失うことなどを暗示"},
+    {"name": "ソーン", "has_reversed": true, "keyword": "巨人・足止め・遅延・棘・衝動・助言", "meaning_upright": "棘、巨人、慎重さ、戒め、忍耐の必要性などを暗示する", "meaning_reversed": "抑えられない感情、引き返せない状況などを暗示"},
+    {"name": "アンスール", "has_reversed": true, "keyword": "返事・コミュニケーション・情報", "meaning_upright": "口、英雄、知性、情報、合格、深い洞察力などを暗示する", "meaning_reversed": "嘘の情報、巧妙な罠、評価されない、無理解などの暗示"},
+    {"name": "ラド", "has_reversed": true, "keyword": "移動・旅", "meaning_upright": "旅、移動、知識の探求、転居、留学などを暗示する", "meaning_reversed": "挫折、旅行でのトラブル、交通事故などを暗示"},
+    {"name": "ケン", "has_reversed": true, "keyword": "知恵・ひらめき・やる気・情熱・炎", "meaning_upright": "光、希望、開始、情熱、開放などを暗示する", "meaning_reversed": "希望を失う、停滞する、力不足で失敗することなどを暗示"},
+    {"name": "ギューフ", "has_reversed": false, "keyword": "ギフト・愛情・才能", "meaning": "贈り物、友情、真実の愛、才能、機会、自己犠牲などを暗示する"},
+    {"name": "ウィン", "has_reversed": true, "keyword": "喜び・満足・果実", "meaning_upright": "幸せ、芸術、喜び、期待などを暗示する", "meaning_reversed": "不幸、敗北、満足感の欠如、不一致などを暗示"},
+    {"name": "ハガル", "has_reversed": false, "keyword": "トラブル・破壊・変化・雹", "meaning": "災害、大自然の脅威、突然のアクシデント、中断、計画の失敗などを暗示"},
+    {"name": "ニイド", "has_reversed": true, "keyword": "欠乏・停滞・忍耐", "meaning_upright": "必要性、慎重な対応、苦難、束縛などを暗示する", "meaning_reversed": "進むべき道を誤る、正位置よりも更に忍耐と計画性が必要なことを暗示"},
+    {"name": "イス", "has_reversed": false, "keyword": "凍結・安定・停滞・氷", "meaning": "氷、ものごとの凍結、静寂、辛抱、スランプ、試練、休息の時間などを暗示"},
+    {"name": "ヤラ", "has_reversed": false, "keyword": "収穫・努力・一年", "meaning": "一年、収穫、大器晩成、業績が上がる、成果、努力が実る、契約などを暗示する"},
+    {"name": "ユル", "has_reversed": false, "keyword": "死と再生・転換・変化・転生", "meaning": "イチイの木、死、再生につながる破壊、防御、終末と再生などを暗示"},
+    {"name": "ぺオース", "has_reversed": true, "keyword": "思わぬ展開・意外な事実・ギャンブル・予想外", "meaning_upright": "隠されていた真実が現れる、秘密、賭けなどを暗示する", "meaning_reversed": "秘密の暴露、自己嫌悪、無分別などを暗示"},
+    {"name": "エオロー", "has_reversed": true, "keyword": "友情・仲間・保護・平和", "meaning_upright": "保護、友情、援助、防衛、大鹿、慈悲などを暗示する", "meaning_reversed": "騙される、犠牲になる、不安定な地位などの暗示"},
+    {"name": "シゲル", "has_reversed": false, "keyword": "自信・元気・勝利・太陽", "meaning": "生命力、太陽、目標達成、健康、成功などを暗示する"},
+    {"name": "ティール", "has_reversed": true, "keyword": "戦い・勝利・男性性・向上心・精神力", "meaning_upright": "戦士、正義、戦って得る勝利、不屈の精神、克服などを暗示する", "meaning_reversed": "手強いライバル、自信喪失、情熱が薄れることなどを暗示"},
+    {"name": "ベオーク", "has_reversed": true, "keyword": "母性・慈愛・成長・世話", "meaning_upright": "成長、誕生、繁殖、母性、能力発揮、春などを暗示する", "meaning_reversed": "家族の病気、不和、調和の取れない状態、消極的などを暗示"},
+    {"name": "エオー", "has_reversed": true, "keyword": "変化・成長・協力・独立", "meaning_upright": "活動的、変化、前進、問題の解決、馬などを暗示する", "meaning_reversed": "突発的な変化、予期せぬハプニングなどを暗示"},
+    {"name": "マン", "has_reversed": true, "keyword": "人間・相互扶助・チームワーク", "meaning_upright": "人間、良好な人間関係、自我、謙遜、責任感などを暗示する", "meaning_reversed": "孤立、人間関係の不和、反感をかうことなどを暗示"},
+    {"name": "ラーグ", "has_reversed": true, "keyword": "水・感性・幻想・女性性", "meaning_upright": "水、女性、直感力、美しいもの、豊かな想像力、芸術面での才能や成功を暗示する", "meaning_reversed": "才能不足、誘惑、勘が外れる、心変わりなどを暗示"},
+    {"name": "イング", "has_reversed": false, "keyword": "到達・達成・完了・満足", "meaning": "多産、生命力、新しい始まり、成就、努力が実る、エネルギーなどを暗示"},
+    {"name": "オセル", "has_reversed": true, "keyword": "故郷・家族・歴史・伝統・遺産", "meaning_upright": "先祖、遺産、伝統、土地、継承などを暗示する", "meaning_reversed": "家や伝統による束縛、社会への反抗、継承への妨害などを暗示"},
+    {"name": "ダエグ", "has_reversed": false, "keyword": "終わりと始まり・日常のサイクル・地道さ・ルーティンワーク", "meaning": "夜明け、豊かな日常、突破、着実な進歩、精神や意識の全面的な変化の可能性を暗示する"},
+    {"name": "ウィルド", "has_reversed": false, "keyword": "宿命", "meaning": "運命、あらゆる可能性、究極、終わりと始まり、自分の力ではどうしようもない宿命的な力や変化、転換期などを暗示"}
+  ]
+}

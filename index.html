@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>総合占いサイト</title>
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- パスワード画面 -->
+    <div id="auth-screen" class="screen active">
+      <h1>総合占いサイト</h1>
+      <p>パスワードを入力してください</p>
+      <div class="auth-form">
+        <input type="password" id="password-input" placeholder="パスワード" />
+        <button id="auth-submit">入る</button>
+      </div>
+      <p id="auth-error" class="error hidden">パスワードが違います</p>
+    </div>
+
+    <!-- メインメニュー -->
+    <div id="main-menu" class="screen">
+      <h1>総合占いサイト</h1>
+      <div class="menu-grid">
+        <button class="menu-btn" data-type="card">カード占い</button>
+        <button class="menu-btn" data-type="astro">占星術</button>
+      </div>
+    </div>
+
+    <!-- カード占い: デッキ選択 -->
+    <div id="deck-select" class="screen">
+      <h2>デッキを選んでください</h2>
+      <div class="menu-grid" id="deck-buttons"></div>
+      <button class="back-btn" data-back="main-menu">戻る</button>
+    </div>
+
+    <!-- カード占い: スプレッド選択 -->
+    <div id="spread-select" class="screen">
+      <h2>スプレッドを選んでください</h2>
+      <p id="selected-deck-name"></p>
+      <div class="menu-grid" id="spread-buttons"></div>
+      <button class="back-btn" data-back="deck-select">戻る</button>
+    </div>
+
+    <!-- カード占い: 結果 -->
+    <div id="card-result" class="screen">
+      <h2>占い結果</h2>
+      <div id="result-meta"></div>
+      <div id="jump-out-section" class="hidden">
+        <h3>飛び出しカード</h3>
+        <div id="jump-out-cards" class="card-grid"></div>
+      </div>
+      <h3>スプレッド</h3>
+      <div id="spread-cards" class="card-grid"></div>
+      <textarea id="result-text" class="result-textarea" readonly></textarea>
+      <div class="result-actions">
+        <button id="copy-result">テキストをコピー</button>
+        <button id="interpret-btn" class="hidden">LLMに解釈を依頼</button>
+      </div>
+      <div id="interpretation" class="hidden">
+        <h3>解釈</h3>
+        <div id="interpretation-text"></div>
+        <button id="copy-interpretation">解釈をコピー</button>
+      </div>
+      <div class="result-actions">
+        <button class="back-btn" data-back="main-menu">最初に戻る</button>
+        <button id="retry-btn">もう一度引く</button>
+      </div>
+    </div>
+
+    <!-- 占星術: メニュー -->
+    <div id="astro-menu" class="screen">
+      <h2>占星術メニュー</h2>
+      <p id="astro-status"></p>
+      <div class="menu-grid">
+        <button class="menu-btn astro-btn" data-astro="natal">性格（ネイタル）</button>
+        <button class="menu-btn astro-btn" data-astro="synastry">相性（シナストリー）</button>
+        <button class="menu-btn astro-btn" data-astro="yearly">年運</button>
+        <button class="menu-btn astro-btn" data-astro="monthly">月運（ルナリターン）</button>
+        <button class="menu-btn astro-btn" data-astro="daily">日運（トランジット）</button>
+      </div>
+      <button class="back-btn" data-back="main-menu">戻る</button>
+    </div>
+
+    <!-- 占星術: 入力 -->
+    <div id="astro-input" class="screen">
+      <h2 id="astro-input-title"></h2>
+      <div id="astro-input-form"></div>
+      <button id="astro-calc-btn">計算する</button>
+      <button class="back-btn" data-back="astro-menu">戻る</button>
+    </div>
+
+    <!-- 占星術: 結果 -->
+    <div id="astro-result" class="screen">
+      <h2>占星術結果</h2>
+      <textarea id="astro-result-text" class="result-textarea" readonly></textarea>
+      <div class="result-actions">
+        <button id="copy-astro-result">テキストをコピー</button>
+        <button id="interpret-astro-btn" class="hidden">LLMに解釈を依頼</button>
+      </div>
+      <div id="astro-interpretation" class="hidden">
+        <h3>解釈</h3>
+        <div id="astro-interpretation-text"></div>
+        <button id="copy-astro-interpretation">解釈をコピー</button>
+      </div>
+      <div class="result-actions">
+        <button class="back-btn" data-back="astro-menu">戻る</button>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

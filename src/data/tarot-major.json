@@ -1,0 +1,29 @@
+{
+  "id": "tarot",
+  "name": "タロット大アルカナ",
+  "has_reversed": true,
+  "cards": [
+    {"name": "愚者", "meaning_upright": "新しい始まり、自由、冒険", "meaning_reversed": "無謀、無責任、不安定"},
+    {"name": "魔術師", "meaning_upright": "創造力、意志の力、可能性", "meaning_reversed": "詐欺、計画の失敗、混乱"},
+    {"name": "女教皇", "meaning_upright": "直感、秘教的な知識、冷静さ", "meaning_reversed": "秘密の暴露、感情の混乱"},
+    {"name": "女帝", "meaning_upright": "豊穣、母性、繁栄", "meaning_reversed": "過保護、不和、停滞"},
+    {"name": "皇帝", "meaning_upright": "権威、安定、秩序", "meaning_reversed": "専制、無秩序、弱さ"},
+    {"name": "教皇", "meaning_upright": "伝統、精神的指導、学び", "meaning_reversed": "独断的、教条主義、反逆"},
+    {"name": "恋人たち", "meaning_upright": "愛、調和、選択", "meaning_reversed": "不一致、決断の失敗、関係の問題"},
+    {"name": "戦車", "meaning_upright": "成功、意志の力、行動", "meaning_reversed": "敗北、方向性の喪失、傲慢"},
+    {"name": "力", "meaning_upright": "勇気、忍耐、自制心", "meaning_reversed": "恐怖、弱さ、自信喪失"},
+    {"name": "隠者", "meaning_upright": "内省、孤独、知恵", "meaning_reversed": "孤立、閉鎖的、自己欺瞞"},
+    {"name": "運命の輪", "meaning_upright": "転機、幸運、変化", "meaning_reversed": "悪運、停滞、予測不能"},
+    {"name": "正義", "meaning_upright": "公平、責任、バランス", "meaning_reversed": "不正、不公平、責任逃れ"},
+    {"name": "吊るされた男", "meaning_upright": "犠牲、視点の転換、受容", "meaning_reversed": "自己中心、抵抗、意義の欠如"},
+    {"name": "死神", "meaning_upright": "終わりと始まり、変容、解放", "meaning_reversed": "停滞、抵抗、執着"},
+    {"name": "節制", "meaning_upright": "調和、バランス、忍耐", "meaning_reversed": "極端、混乱、不和"},
+    {"name": "悪魔", "meaning_upright": "誘惑、束縛、物質主義", "meaning_reversed": "解放、自覚、回復"},
+    {"name": "塔", "meaning_upright": "破壊、衝撃、目覚め", "meaning_reversed": "避けられた災難、恐怖、頑固さ"},
+    {"name": "星", "meaning_upright": "希望、癒し、インスピレーション", "meaning_reversed": "失望、停滞、不確実性"},
+    {"name": "月", "meaning_upright": "直感、夢、潜在意識", "meaning_reversed": "幻滅、不安、混乱"},
+    {"name": "太陽", "meaning_upright": "成功、幸福、生命力", "meaning_reversed": "過信、失敗、不満"},
+    {"name": "審判", "meaning_upright": "復活、決断、評価", "meaning_reversed": "後悔、否定、停滞"},
+    {"name": "世界", "meaning_upright": "達成、完成、統合", "meaning_reversed": "未完成、停滞、不安"}
+  ]
+}

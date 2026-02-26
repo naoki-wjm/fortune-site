@@ -1,0 +1,194 @@
+:root {
+  font-family: 'Zen Maru Gothic', system-ui, sans-serif;
+  line-height: 1.6;
+  color: #e8e0d6;
+  background-color: #1a1520;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+}
+
+#app {
+  max-width: 720px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+/* スクリーン切替 */
+.screen { display: none; }
+.screen.active { display: block; }
+.hidden { display: none !important; }
+
+/* 見出し */
+h1 { font-size: 1.8rem; margin-bottom: 1rem; color: #d4a8e0; }
+h2 { font-size: 1.4rem; margin-bottom: 0.8rem; color: #c4a0d0; }
+h3 { font-size: 1.1rem; margin: 1rem 0 0.5rem; color: #b898c0; }
+
+/* ボタン共通 */
+button {
+  border: 1px solid #4a3a5a;
+  border-radius: 8px;
+  padding: 0.6em 1.2em;
+  font-size: 1rem;
+  font-family: inherit;
+  color: #e8e0d6;
+  background: #2a2030;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+button:hover { background: #3a2a4a; border-color: #8a6aaa; }
+button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* メニューグリッド */
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.8rem;
+  margin: 1rem 0;
+}
+.menu-btn {
+  padding: 1em;
+  font-size: 1.1rem;
+  background: linear-gradient(135deg, #2a2040, #3a2a50);
+  border: 1px solid #5a4a6a;
+}
+.menu-btn:hover { background: linear-gradient(135deg, #3a2a50, #4a3a60); border-color: #9a7aba; }
+
+/* 戻るボタン */
+.back-btn {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  background: transparent;
+  border-color: #3a3040;
+}
+
+/* パスワード画面 */
+.auth-form {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin: 1rem 0;
+}
+.auth-form input {
+  padding: 0.6em 1em;
+  border: 1px solid #4a3a5a;
+  border-radius: 8px;
+  background: #2a2030;
+  color: #e8e0d6;
+  font-size: 1rem;
+  font-family: inherit;
+}
+.error { color: #e06070; font-size: 0.9rem; }
+
+/* カード表示 */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.8rem;
+  margin: 0.5rem 0;
+}
+.card-item {
+  background: linear-gradient(135deg, #2a2040, #352848);
+  border: 1px solid #5a4a6a;
+  border-radius: 10px;
+  padding: 1em;
+  text-align: center;
+}
+.card-item .position { font-size: 0.85rem; color: #9a8aaa; margin-bottom: 0.3rem; }
+.card-item .card-name { font-size: 1.1rem; font-weight: bold; color: #d4b8e0; }
+.card-item .reversed { color: #c07080; }
+.card-item .card-meaning { font-size: 0.85rem; color: #a898b0; margin-top: 0.3rem; }
+
+/* テキストエリア */
+.result-textarea {
+  width: 100%;
+  min-height: 200px;
+  margin: 1rem 0;
+  padding: 0.8em;
+  background: #1e1828;
+  border: 1px solid #3a3040;
+  border-radius: 8px;
+  color: #d0c8d8;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.85rem;
+  resize: vertical;
+}
+
+/* アクションボタン群 */
+.result-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin: 0.5rem 0;
+}
+
+/* 都道府県/市区町村セレクト */
+.form-group {
+  margin: 0.6rem 0;
+  text-align: left;
+}
+.form-group label {
+  display: block;
+  font-size: 0.9rem;
+  color: #a898b0;
+  margin-bottom: 0.2rem;
+}
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 0.5em 0.8em;
+  border: 1px solid #4a3a5a;
+  border-radius: 6px;
+  background: #2a2030;
+  color: #e8e0d6;
+  font-size: 1rem;
+  font-family: inherit;
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+.form-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.5rem;
+}
+
+/* 解釈セクション */
+#interpretation, #astro-interpretation {
+  background: #1e1828;
+  border: 1px solid #4a3a5a;
+  border-radius: 8px;
+  padding: 1em;
+  margin: 1rem 0;
+}
+#interpretation-text, #astro-interpretation-text {
+  white-space: pre-wrap;
+  line-height: 1.8;
+  font-size: 0.95rem;
+}
+
+/* ローディング */
+.loading {
+  display: inline-block;
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* レスポンシブ */
+@media (max-width: 480px) {
+  h1 { font-size: 1.4rem; }
+  .menu-grid { grid-template-columns: 1fr; }
+  .card-grid { grid-template-columns: 1fr; }
+  .form-row, .form-row-3 { grid-template-columns: 1fr; }
+}
