@@ -23,7 +23,6 @@ export default async function handler(req, res) {
   }
 
   try {
-    // ストリーミングで受け取ってタイムアウトを回避
     const ALLOWED_MODELS = ['claude-opus-4-6', 'claude-sonnet-4-6'];
     const selectedModel = ALLOWED_MODELS.includes(model) ? model : 'claude-opus-4-6';
 
@@ -33,16 +32,26 @@ export default async function handler(req, res) {
       messages: [{ role: 'user', content: prompt }],
     });
 
-    const finalMessage = await stream.finalMessage();
+    // SSEヘッダーを設定してストリーミング開始
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
 
-    const text = finalMessage.content
-      .filter(block => block.type === 'text')
-      .map(block => block.text)
-      .join('\n');
+    for await (const event of stream) {
+      if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
+        res.write(`data: ${JSON.stringify({ text: event.delta.text })}\n\n`);
+      }
+    }
 
-    return res.status(200).json({ text });
+    res.write('data: [DONE]\n\n');
+    res.end();
   } catch (error) {
     console.error('Claude API error:', error.message);
-    return res.status(500).json({ error: 'LLM API call failed' });
+    // SSEヘッダー送信前のエラーならJSONで返す
+    if (!res.headersSent) {
+      return res.status(500).json({ error: 'LLM API call failed' });
+    }
+    res.write(`data: ${JSON.stringify({ error: 'LLM API call failed' })}\n\n`);
+    res.end();
   }
 }

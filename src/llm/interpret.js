@@ -55,9 +55,11 @@ export function buildAstroPrompt(resultText, astroType) {
 }
 
 /**
- * LLM解釈APIを呼び出す
+ * LLM解釈APIをストリーミングで呼び出す
+ * onChunk(fullText) が新しいチャンクを受信するたびに呼ばれる（累積テキスト）
+ * 完了時に全文を返す
  */
-export async function requestInterpretation(prompt, model = 'claude-opus-4-6') {
+export async function requestInterpretation(prompt, model = 'claude-opus-4-6', onChunk) {
   const password = getPassword();
   const res = await fetch('/api/interpret', {
     method: 'POST',
@@ -68,6 +70,37 @@ export async function requestInterpretation(prompt, model = 'claude-opus-4-6') {
     const err = await res.json().catch(() => ({ error: 'Unknown error' }));
     throw new Error(err.error || `HTTP ${res.status}`);
   }
-  const data = await res.json();
-  return data.text;
+
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let fullText = '';
+  let buffer = '';
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split('\n');
+    // 最後の不完全な行をバッファに残す
+    buffer = lines.pop();
+
+    for (const line of lines) {
+      if (!line.startsWith('data: ')) continue;
+      const payload = line.slice(6);
+      if (payload === '[DONE]') continue;
+      try {
+        const data = JSON.parse(payload);
+        if (data.error) throw new Error(data.error);
+        if (data.text) {
+          fullText += data.text;
+          if (onChunk) onChunk(fullText);
+        }
+      } catch (e) {
+        if (e.message === 'LLM API call failed') throw e;
+      }
+    }
+  }
+
+  return fullText;
 }

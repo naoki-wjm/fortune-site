@@ -187,11 +187,16 @@ function setupResultActions() {
       document.querySelectorAll('#card-result .interpret-btn').forEach(b => b.disabled = true);
       btn.textContent = '解釈中...';
       btn.classList.add('loading');
+      const interpEl = document.getElementById('interpretation');
+      const textEl = document.getElementById('interpretation-text');
+      document.getElementById('interpretation-model-label').textContent = `解釈（${modelLabel}）`;
+      textEl.innerHTML = '';
+      interpEl.classList.remove('hidden');
       try {
-        const text = await requestInterpretation(prompt, model);
-        document.getElementById('interpretation-text').innerHTML = marked.parse(text);
-        document.getElementById('interpretation-model-label').textContent = `解釈（${modelLabel}）`;
-        document.getElementById('interpretation').classList.remove('hidden');
+        await requestInterpretation(prompt, model, (fullText) => {
+          textEl.innerHTML = marked.parse(fullText);
+          textEl.scrollTop = textEl.scrollHeight;
+        });
       } catch (err) {
         alert(`解釈エラー: ${err.message}`);
       } finally {
@@ -225,11 +230,16 @@ function setupResultActions() {
       document.querySelectorAll('#astro-result .interpret-btn').forEach(b => b.disabled = true);
       btn.textContent = '解釈中...';
       btn.classList.add('loading');
+      const interpEl = document.getElementById('astro-interpretation');
+      const textEl = document.getElementById('astro-interpretation-text');
+      document.getElementById('astro-interpretation-model-label').textContent = `解釈（${modelLabel}）`;
+      textEl.innerHTML = '';
+      interpEl.classList.remove('hidden');
       try {
-        const text = await requestInterpretation(prompt, model);
-        document.getElementById('astro-interpretation-text').innerHTML = marked.parse(text);
-        document.getElementById('astro-interpretation-model-label').textContent = `解釈（${modelLabel}）`;
-        document.getElementById('astro-interpretation').classList.remove('hidden');
+        await requestInterpretation(prompt, model, (fullText) => {
+          textEl.innerHTML = marked.parse(fullText);
+          textEl.scrollTop = textEl.scrollHeight;
+        });
       } catch (err) {
         alert(`解釈エラー: ${err.message}`);
       } finally {
