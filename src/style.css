@@ -170,9 +170,39 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
   margin: 1rem 0;
 }
 #interpretation-text, #astro-interpretation-text {
-  white-space: pre-wrap;
   line-height: 1.8;
   font-size: 0.95rem;
+}
+#interpretation-text h1, #astro-interpretation-text h1,
+#interpretation-text h2, #astro-interpretation-text h2,
+#interpretation-text h3, #astro-interpretation-text h3 {
+  color: #d4b8e0;
+  margin: 1em 0 0.4em;
+}
+#interpretation-text h1, #astro-interpretation-text h1 { font-size: 1.2rem; }
+#interpretation-text h2, #astro-interpretation-text h2 { font-size: 1.1rem; }
+#interpretation-text h3, #astro-interpretation-text h3 { font-size: 1rem; }
+#interpretation-text p, #astro-interpretation-text p {
+  margin: 0.5em 0;
+}
+#interpretation-text ul, #astro-interpretation-text ul,
+#interpretation-text ol, #astro-interpretation-text ol {
+  margin: 0.5em 0;
+  padding-left: 1.5em;
+}
+#interpretation-text li, #astro-interpretation-text li {
+  margin: 0.2em 0;
+}
+#interpretation-text strong, #astro-interpretation-text strong {
+  color: #e0c8f0;
+}
+#interpretation-text em, #astro-interpretation-text em {
+  color: #c8b0d8;
+}
+#interpretation-text hr, #astro-interpretation-text hr {
+  border: none;
+  border-top: 1px solid #3a3040;
+  margin: 1em 0;
 }
 
 /* ローディング */

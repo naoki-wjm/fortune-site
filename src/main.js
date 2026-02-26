@@ -8,6 +8,7 @@ import { initSweph, isReady, calcNatal, calcYearly, calcTransit, calcLunarReturn
 import { buildAstroForm, getAstroInput } from './astro/wizard.js';
 import { displayAstroResult } from './astro/display.js';
 import { buildCardPrompt, buildAstroPrompt, requestInterpretation } from './llm/interpret.js';
+import { marked } from 'marked';
 
 import enigmaOracle from './data/enigma-oracle.json';
 import skyOracle from './data/sky-oracle.json';
@@ -183,7 +184,7 @@ function setupResultActions() {
     interpretBtn.classList.add('loading');
     try {
       const text = await requestInterpretation(prompt);
-      document.getElementById('interpretation-text').textContent = text;
+      document.getElementById('interpretation-text').innerHTML = marked.parse(text);
       document.getElementById('interpretation').classList.remove('hidden');
     } catch (err) {
       alert(`解釈エラー: ${err.message}`);
@@ -216,7 +217,7 @@ function setupResultActions() {
     interpretAstroBtn.classList.add('loading');
     try {
       const text = await requestInterpretation(prompt);
-      document.getElementById('astro-interpretation-text').textContent = text;
+      document.getElementById('astro-interpretation-text').innerHTML = marked.parse(text);
       document.getElementById('astro-interpretation').classList.remove('hidden');
     } catch (err) {
       alert(`解釈エラー: ${err.message}`);

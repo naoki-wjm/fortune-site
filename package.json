@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
+    "marked": "^17.0.3",
     "sweph-wasm": "^2.6.9"
   }
 }
