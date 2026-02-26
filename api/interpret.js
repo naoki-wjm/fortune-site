@@ -1,5 +1,8 @@
 import Anthropic from '@anthropic-ai/sdk';
 
+// Hobbyプランでは最大60秒
+export const maxDuration = 60;
+
 const client = new Anthropic();
 
 export default async function handler(req, res) {
@@ -20,13 +23,16 @@ export default async function handler(req, res) {
   }
 
   try {
-    const response = await client.messages.create({
+    // ストリーミングで受け取ってタイムアウトを回避
+    const stream = client.messages.stream({
       model: 'claude-opus-4-6',
-      max_tokens: 4096,
+      max_tokens: 8192,
       messages: [{ role: 'user', content: prompt }],
     });
 
-    const text = response.content
+    const finalMessage = await stream.finalMessage();
+
+    const text = finalMessage.content
       .filter(block => block.type === 'text')
       .map(block => block.text)
       .join('\n');
