@@ -10,7 +10,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { prompt, password } = req.body;
+  const { prompt, password, model } = req.body;
 
   // パスワードチェック（二重防御）
   const sitePassword = process.env.SITE_PASSWORD;
@@ -24,8 +24,11 @@ export default async function handler(req, res) {
 
   try {
     // ストリーミングで受け取ってタイムアウトを回避
+    const ALLOWED_MODELS = ['claude-opus-4-6', 'claude-sonnet-4-6'];
+    const selectedModel = ALLOWED_MODELS.includes(model) ? model : 'claude-opus-4-6';
+
     const stream = client.messages.stream({
-      model: 'claude-opus-4-6',
+      model: selectedModel,
       max_tokens: 8192,
       messages: [{ role: 'user', content: prompt }],
     });

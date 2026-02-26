@@ -57,12 +57,12 @@ export function buildAstroPrompt(resultText, astroType) {
 /**
  * LLM解釈APIを呼び出す
  */
-export async function requestInterpretation(prompt) {
+export async function requestInterpretation(prompt, model = 'claude-opus-4-6') {
   const password = getPassword();
   const res = await fetch('/api/interpret', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ prompt, password }),
+    body: JSON.stringify({ prompt, password, model }),
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ error: 'Unknown error' }));

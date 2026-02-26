@@ -172,28 +172,33 @@ function setupResultActions() {
     });
   });
 
-  // LLM解釈ボタン（カード占い）
-  const interpretBtn = document.getElementById('interpret-btn');
-  interpretBtn.classList.remove('hidden');
-  interpretBtn.addEventListener('click', async () => {
-    const data = window.__lastCardResult;
-    if (!data) return;
-    const prompt = buildCardPrompt(data.deckName, data.spreadName, data.jumpedCards, data.drawnCards, data.positions);
-    interpretBtn.disabled = true;
-    interpretBtn.textContent = '解釈中...';
-    interpretBtn.classList.add('loading');
-    try {
-      const text = await requestInterpretation(prompt);
-      document.getElementById('interpretation-text').innerHTML = marked.parse(text);
-      document.getElementById('interpretation').classList.remove('hidden');
-    } catch (err) {
-      alert(`解釈エラー: ${err.message}`);
-    } finally {
-      interpretBtn.disabled = false;
-      interpretBtn.textContent = 'LLMに解釈を依頼';
-      interpretBtn.classList.remove('loading');
-    }
-  });
+  // LLM解釈ボタン（カード占い）— Opus / Sonnet 共通ハンドラ
+  function setupCardInterpretBtn(btnId, model, modelLabel) {
+    const btn = document.getElementById(btnId);
+    const originalText = btn.textContent;
+    btn.addEventListener('click', async () => {
+      const data = window.__lastCardResult;
+      if (!data) return;
+      const prompt = buildCardPrompt(data.deckName, data.spreadName, data.jumpedCards, data.drawnCards, data.positions);
+      document.querySelectorAll('#card-result .interpret-btn').forEach(b => b.disabled = true);
+      btn.textContent = '解釈中...';
+      btn.classList.add('loading');
+      try {
+        const text = await requestInterpretation(prompt, model);
+        document.getElementById('interpretation-text').innerHTML = marked.parse(text);
+        document.getElementById('interpretation-model-label').textContent = `解釈（${modelLabel}）`;
+        document.getElementById('interpretation').classList.remove('hidden');
+      } catch (err) {
+        alert(`解釈エラー: ${err.message}`);
+      } finally {
+        document.querySelectorAll('#card-result .interpret-btn').forEach(b => b.disabled = false);
+        btn.textContent = originalText;
+        btn.classList.remove('loading');
+      }
+    });
+  }
+  setupCardInterpretBtn('interpret-opus-btn', 'claude-opus-4-6', 'Opus');
+  setupCardInterpretBtn('interpret-sonnet-btn', 'claude-sonnet-4-6', 'Sonnet');
 
   // 解釈コピー（カード）
   document.getElementById('copy-interpretation').addEventListener('click', () => {
@@ -205,28 +210,33 @@ function setupResultActions() {
     });
   });
 
-  // LLM解釈ボタン（占星術）
-  const interpretAstroBtn = document.getElementById('interpret-astro-btn');
-  interpretAstroBtn.classList.remove('hidden');
-  interpretAstroBtn.addEventListener('click', async () => {
-    const data = window.__lastAstroResult;
-    if (!data) return;
-    const prompt = buildAstroPrompt(data.text, data.type);
-    interpretAstroBtn.disabled = true;
-    interpretAstroBtn.textContent = '解釈中...';
-    interpretAstroBtn.classList.add('loading');
-    try {
-      const text = await requestInterpretation(prompt);
-      document.getElementById('astro-interpretation-text').innerHTML = marked.parse(text);
-      document.getElementById('astro-interpretation').classList.remove('hidden');
-    } catch (err) {
-      alert(`解釈エラー: ${err.message}`);
-    } finally {
-      interpretAstroBtn.disabled = false;
-      interpretAstroBtn.textContent = 'LLMに解釈を依頼';
-      interpretAstroBtn.classList.remove('loading');
-    }
-  });
+  // LLM解釈ボタン（占星術）— Opus / Sonnet 共通ハンドラ
+  function setupAstroInterpretBtn(btnId, model, modelLabel) {
+    const btn = document.getElementById(btnId);
+    const originalText = btn.textContent;
+    btn.addEventListener('click', async () => {
+      const data = window.__lastAstroResult;
+      if (!data) return;
+      const prompt = buildAstroPrompt(data.text, data.type);
+      document.querySelectorAll('#astro-result .interpret-btn').forEach(b => b.disabled = true);
+      btn.textContent = '解釈中...';
+      btn.classList.add('loading');
+      try {
+        const text = await requestInterpretation(prompt, model);
+        document.getElementById('astro-interpretation-text').innerHTML = marked.parse(text);
+        document.getElementById('astro-interpretation-model-label').textContent = `解釈（${modelLabel}）`;
+        document.getElementById('astro-interpretation').classList.remove('hidden');
+      } catch (err) {
+        alert(`解釈エラー: ${err.message}`);
+      } finally {
+        document.querySelectorAll('#astro-result .interpret-btn').forEach(b => b.disabled = false);
+        btn.textContent = originalText;
+        btn.classList.remove('loading');
+      }
+    });
+  }
+  setupAstroInterpretBtn('interpret-astro-opus-btn', 'claude-opus-4-6', 'Opus');
+  setupAstroInterpretBtn('interpret-astro-sonnet-btn', 'claude-sonnet-4-6', 'Sonnet');
 
   // 解釈コピー（占星術）
   document.getElementById('copy-astro-interpretation').addEventListener('click', () => {

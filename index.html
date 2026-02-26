@@ -56,10 +56,11 @@
       <textarea id="result-text" class="result-textarea" readonly></textarea>
       <div class="result-actions">
         <button id="copy-result">テキストをコピー</button>
-        <button id="interpret-btn" class="hidden">LLMに解釈を依頼</button>
+        <button id="interpret-opus-btn" class="interpret-btn">Opusに解釈を依頼</button>
+        <button id="interpret-sonnet-btn" class="interpret-btn">Sonnetに解釈を依頼</button>
       </div>
       <div id="interpretation" class="hidden">
-        <h3>解釈</h3>
+        <h3 id="interpretation-model-label">解釈</h3>
         <div id="interpretation-text"></div>
         <button id="copy-interpretation">解釈をコピー</button>
       </div>
@@ -97,10 +98,11 @@
       <textarea id="astro-result-text" class="result-textarea" readonly></textarea>
       <div class="result-actions">
         <button id="copy-astro-result">テキストをコピー</button>
-        <button id="interpret-astro-btn" class="hidden">LLMに解釈を依頼</button>
+        <button id="interpret-astro-opus-btn" class="interpret-btn">Opusに解釈を依頼</button>
+        <button id="interpret-astro-sonnet-btn" class="interpret-btn">Sonnetに解釈を依頼</button>
       </div>
       <div id="astro-interpretation" class="hidden">
-        <h3>解釈</h3>
+        <h3 id="astro-interpretation-model-label">解釈</h3>
         <div id="astro-interpretation-text"></div>
         <button id="copy-astro-interpretation">解釈をコピー</button>
       </div>
