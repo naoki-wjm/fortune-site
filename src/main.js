@@ -146,6 +146,10 @@ function performCardReading() {
   // LLM解釈用にデータを保存
   window.__lastCardResult = { deckName: currentDeck.name, spreadName: currentSpread.name, jumpedCards, drawnCards, positions: currentSpread.positions };
 
+  // 前回の解釈をリセット
+  document.getElementById('interpretation').classList.add('hidden');
+  document.getElementById('interpretation-text').innerHTML = '';
+
   showScreen('card-result');
 }
 
@@ -323,6 +327,11 @@ function setupAstroCalc() {
 
       displayAstroResult(resultText);
       window.__lastAstroResult = { text: resultText, type: currentAstroType };
+
+      // 前回の解釈をリセット
+      document.getElementById('astro-interpretation').classList.add('hidden');
+      document.getElementById('astro-interpretation-text').innerHTML = '';
+
       showScreen('astro-result');
     } catch (err) {
       alert(`計算エラー: ${err.message}`);
