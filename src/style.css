@@ -222,3 +222,16 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
   .card-grid { grid-template-columns: 1fr; }
   .form-row, .form-row-3 { grid-template-columns: 1fr; }
 }
+
+.site-footer {
+  text-align: center;
+  padding: 2rem 1rem 1rem;
+  font-size: 0.75rem;
+}
+.site-footer a {
+  color: #8a7a9a;
+  text-decoration: none;
+}
+.site-footer a:hover {
+  text-decoration: underline;
+}
