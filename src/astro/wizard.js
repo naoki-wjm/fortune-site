@@ -44,31 +44,30 @@ function createLocationFields(prefix, container) {
  * 生年月日＋出生時刻フィールド生成
  */
 function createBirthFields(prefix, container, label = '') {
-  const now = new Date();
   const html = `
     ${label ? `<h3>${label}</h3>` : ''}
     <div class="form-row-3">
       <div class="form-group">
         <label>年</label>
-        <input type="number" id="${prefix}-year" value="1990" min="1900" max="2100">
+        <input type="number" id="${prefix}-year" placeholder="1990" min="1900" max="2100">
       </div>
       <div class="form-group">
         <label>月</label>
-        <input type="number" id="${prefix}-month" value="1" min="1" max="12">
+        <input type="number" id="${prefix}-month" placeholder="1" min="1" max="12">
       </div>
       <div class="form-group">
         <label>日</label>
-        <input type="number" id="${prefix}-day" value="1" min="1" max="31">
+        <input type="number" id="${prefix}-day" placeholder="1" min="1" max="31">
       </div>
     </div>
     <div class="form-row">
       <div class="form-group">
         <label>時</label>
-        <input type="number" id="${prefix}-hour" value="12" min="0" max="23">
+        <input type="number" id="${prefix}-hour" placeholder="12" min="0" max="23">
       </div>
       <div class="form-group">
         <label>分</label>
-        <input type="number" id="${prefix}-minute" value="0" min="0" max="59">
+        <input type="number" id="${prefix}-minute" placeholder="0" min="0" max="59">
       </div>
     </div>
   `;
@@ -89,13 +88,20 @@ function createDateFields(prefix, container, { showDay = true, showMonth = true 
 }
 
 function getValues(prefix) {
-  const get = id => {
+  const get = (id, fallback) => {
     const el = document.getElementById(`${prefix}-${id}`);
-    return el ? (el.tagName === 'SELECT' ? el.value : parseInt(el.value)) : null;
+    if (!el) return null;
+    if (el.tagName === 'SELECT') return el.value;
+    const v = parseInt(el.value);
+    if (isNaN(v)) {
+      if (fallback !== undefined) return fallback;
+      throw new Error(`${el.previousElementSibling?.textContent || id}を入力してください`);
+    }
+    return v;
   };
   return {
     year: get('year'), month: get('month'), day: get('day'),
-    hour: get('hour'), minute: get('minute'),
+    hour: get('hour', 12), minute: get('minute', 0),
     pref: get('pref'), cityName: get('city'),
   };
 }
@@ -123,22 +129,20 @@ export function buildAstroForm(astroType) {
       break;
 
     case 'synastry':
-      createBirthFields('synA', form, 'Aさん');
+      createBirthFields('synA', form, 'Aさん（生年月日）');
       createLocationFields('synA', form);
-      createBirthFields('synB', form, 'Bさん');
+      createBirthFields('synB', form, 'Bさん（生年月日）');
       createLocationFields('synB', form);
       break;
 
     case 'yearly':
-      form.insertAdjacentHTML('beforeend', '<p>まずネイタルを入力してください</p>');
-      createBirthFields('yr-natal', form, 'ネイタル');
+      createBirthFields('yr-natal', form, '生年月日');
       createLocationFields('yr-natal', form);
       createDateFields('yr-transit', form, { showDay: false, showMonth: false });
       break;
 
     case 'monthly':
-      form.insertAdjacentHTML('beforeend', '<p>まずネイタルを入力してください</p>');
-      createBirthFields('lr-natal', form, 'ネイタル');
+      createBirthFields('lr-natal', form, '生年月日');
       createLocationFields('lr-natal', form);
       form.insertAdjacentHTML('beforeend', '<h3>ルナリターン</h3>');
       createDateFields('lr-transit', form, { showDay: false });
@@ -147,8 +151,7 @@ export function buildAstroForm(astroType) {
       break;
 
     case 'daily':
-      form.insertAdjacentHTML('beforeend', '<p>まずネイタルを入力してください</p>');
-      createBirthFields('tr-natal', form, 'ネイタル');
+      createBirthFields('tr-natal', form, '生年月日');
       createLocationFields('tr-natal', form);
       form.insertAdjacentHTML('beforeend', '<h3>トランジット日</h3>');
       createDateFields('tr-transit', form);
