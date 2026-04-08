@@ -49,10 +49,10 @@ function getAspect(deg1, deg2, orb = ORB) {
 function getHouse(lon, cusps) {
   for (let i = 1; i <= 12; i++) {
     const start = cusps[i];
-    const end = i === 12 ? cusps[1] + 360 : cusps[i + 1];
-    let l = lon;
-    if (i === 12 && lon < cusps[1]) l += 360;
-    if (l >= start && l < end) return i;
+    const end = i === 12 ? cusps[1] : cusps[i + 1];
+    const houseSpan = ((end - start) % 360 + 360) % 360;
+    const planetDist = ((lon - start) % 360 + 360) % 360;
+    if (planetDist < houseSpan) return i;
   }
   return 1;
 }
