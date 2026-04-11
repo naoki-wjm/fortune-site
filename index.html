@@ -81,6 +81,25 @@
         <button class="menu-btn astro-btn" data-astro="monthly">月運（ルナリターン）</button>
         <button class="menu-btn astro-btn" data-astro="daily">日運（トランジット）</button>
       </div>
+      <details class="astro-options">
+        <summary>オプション</summary>
+        <div class="asteroid-options">
+          <h3>小惑星</h3>
+          <label><input type="checkbox" class="asteroid-toggle" data-body="chiron"> キロン</label>
+          <label><input type="checkbox" class="asteroid-toggle" data-body="lilith"> リリス</label>
+          <label><input type="checkbox" class="asteroid-toggle" data-body="ceres"> セレス</label>
+          <label><input type="checkbox" class="asteroid-toggle" data-body="pallas"> パラス</label>
+          <label><input type="checkbox" class="asteroid-toggle" data-body="juno"> ジュノー</label>
+          <label><input type="checkbox" class="asteroid-toggle" data-body="vesta"> ヴェスタ</label>
+        </div>
+        <div class="data-management">
+          <h3>データ管理</h3>
+          <div class="result-actions">
+            <button id="astro-export">エクスポート</button>
+            <button id="astro-import">インポート</button>
+          </div>
+        </div>
+      </details>
       <button class="back-btn" data-back="main-menu">戻る</button>
     </div>
 
@@ -100,6 +119,15 @@
         <button id="copy-astro-result">テキストをコピー</button>
         <button id="interpret-astro-opus-btn" class="interpret-btn">Opusに解釈を依頼</button>
         <button id="interpret-astro-sonnet-btn" class="interpret-btn">Sonnetに解釈を依頼</button>
+      </div>
+      <div id="astro-save-section" class="hidden astro-save-section">
+        <div class="form-row">
+          <div class="form-group">
+            <label>チャート名（任意）</label>
+            <input type="text" id="astro-save-name" placeholder="わたしのチャート">
+          </div>
+        </div>
+        <button id="astro-save-chart">保存</button>
       </div>
       <div id="astro-interpretation" class="hidden">
         <h3 id="astro-interpretation-model-label">解釈</h3>

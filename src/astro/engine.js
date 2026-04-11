@@ -8,6 +8,10 @@ const PLANETS = [
   [5,'木星'], [6,'土星'], [7,'天王星'], [8,'海王星'], [9,'冥王星'],
   [11,'Nノード']
 ];
+const OPTIONAL_BODIES = [
+  [15,'キロン'], [12,'リリス'], [17,'セレス'],
+  [18,'パラス'], [19,'ジュノー'], [20,'ヴェスタ'],
+];
 const OUTER_PLANETS = [
   [2,'水星'], [3,'金星'], [4,'火星'],
   [5,'木星'], [6,'土星'], [7,'天王星'], [8,'海王星'], [9,'冥王星']
@@ -74,19 +78,34 @@ export async function initSweph() {
 export function isReady() { return swe !== null; }
 
 /**
- * ネイタル計算
+ * 場所を解決する共通ヘルパー
+ * { pref, cityName } または { lat, lng } を受け取り { lat, lng, label } を返す
  */
-export function calcNatal({ year, month, day, hour, minute, pref, cityName }) {
-  const city = cities[pref].find(c => c.name === cityName);
-  if (!city) throw new Error(`都市が見つかりません: ${pref} ${cityName}`);
+function resolveLocation(input) {
+  if (input.lat != null && input.lng != null) {
+    return { lat: input.lat, lng: input.lng, label: `緯度${input.lat}°, 経度${input.lng}°` };
+  }
+  const city = cities[input.pref]?.find(c => c.name === input.cityName);
+  if (!city) throw new Error(`都市が見つかりません: ${input.pref} ${input.cityName}`);
+  return { lat: city.lat, lng: city.lng, label: `${input.pref}${input.cityName}` };
+}
 
-  const utcHour = hour - 9 + minute / 60;
+/**
+ * ネイタル計算
+ * optionalBodies: { chiron, lilith, ceres, pallas, juno, vesta } のうち true のもの
+ */
+export function calcNatal({ year, month, day, hour, minute, pref, cityName, lat, lng, utcOffset, optionalBodies }) {
+  const loc = resolveLocation({ pref, cityName, lat, lng });
+  const offset = utcOffset != null ? utcOffset : 9;
+
+  const utcHour = hour - offset + minute / 60;
   const jd = swe.swe_julday(year, month, day, utcHour, 1);
-  const houses = swe.swe_houses(jd, city.lat, city.lng, 'P');
+  const houses = swe.swe_houses(jd, loc.lat, loc.lng, 'P');
 
   const positions = [];
-  let output = `【ネイタル】${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')} ${String(hour).padStart(2,'0')}:${String(minute).padStart(2,'0')} ${pref}${cityName}\nハウス: プラシーダス\n\n`;
+  let output = `【ネイタル】${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')} ${String(hour).padStart(2,'0')}:${String(minute).padStart(2,'0')} ${loc.label}\nハウス: プラシーダス\n\n`;
 
+  // メイン天体
   for (const [id, name] of PLANETS) {
     const r = swe.swe_calc_ut(jd, id, 256);
     const lon = r[0], spd = r[3];
@@ -95,20 +114,40 @@ export function calcNatal({ year, month, day, hour, minute, pref, cityName }) {
     output += `${name} ${fmt(lon)} (${house}H)${spd < 0 ? ' R' : ''}\n`;
   }
 
+  // オプション小惑星
+  const optPositions = [];
+  if (optionalBodies) {
+    const bodyMap = { chiron: 15, lilith: 12, ceres: 17, pallas: 18, juno: 19, vesta: 20 };
+    const activeIds = Object.entries(bodyMap).filter(([key]) => optionalBodies[key]).map(([, id]) => id);
+    if (activeIds.length > 0) {
+      output += `\n`;
+      for (const [id, name] of OPTIONAL_BODIES) {
+        if (!activeIds.includes(id)) continue;
+        const r = swe.swe_calc_ut(jd, id, 256);
+        const lon = r[0], spd = r[3];
+        const house = getHouse(lon, houses.cusps);
+        const pos = { id, name, lon, spd, house, optional: true };
+        optPositions.push(pos);
+        output += `${name} ${fmt(lon)} (${house}H)${spd < 0 ? ' R' : ''}\n`;
+      }
+    }
+  }
+
   const asc = houses.ascmc[0];
   const mc = houses.ascmc[1];
   output += `\nASC ${fmt(asc)} / MC ${fmt(mc)}\n\n`;
 
+  const allPositions = [...positions, ...optPositions];
   const aspects = [];
-  for (let i = 0; i < positions.length; i++) {
-    for (let j = i + 1; j < positions.length; j++) {
-      const asp = getAspect(positions[i].lon, positions[j].lon);
-      if (asp) aspects.push(`${positions[i].name}${asp.symbol}${positions[j].name}(${asp.orb.toFixed(0)}°)`);
+  for (let i = 0; i < allPositions.length; i++) {
+    for (let j = i + 1; j < allPositions.length; j++) {
+      const asp = getAspect(allPositions[i].lon, allPositions[j].lon);
+      if (asp) aspects.push(`${allPositions[i].name}${asp.symbol}${allPositions[j].name}(${asp.orb.toFixed(0)}°)`);
     }
   }
   output += aspects.join(' / ');
 
-  return { output, positions, angles: { asc, mc }, houses, city };
+  return { output, positions, optPositions, angles: { asc, mc }, houses, loc };
 }
 
 /**
@@ -273,9 +312,8 @@ export function calcTransit({ year, month, day, natalPositions, natalAngles }) {
 /**
  * ルナリターン（月運）
  */
-export function calcLunarReturn({ year, month, pref, cityName, natalPositions, natalAngles }) {
-  const city = cities[pref].find(c => c.name === cityName);
-  if (!city) throw new Error(`都市が見つかりません: ${pref} ${cityName}`);
+export function calcLunarReturn({ year, month, pref, cityName, lat, lng, natalPositions, natalAngles }) {
+  const loc = resolveLocation({ pref, cityName, lat, lng });
 
   const natalMoon = natalPositions.find(p => p.name === '月').lon;
   let jd = swe.swe_julday(year, month, 1, 0, 1);
@@ -315,9 +353,9 @@ export function calcLunarReturn({ year, month, pref, cityName, natalPositions, n
 
     output += returns.length > 1 ? `【ルナリターン ${i + 1}】` : `【ルナリターン】`;
     output += `${dt.year}-${String(dt.month).padStart(2,'0')}-${String(dt.day).padStart(2,'0')} ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')} JST\n`;
-    output += `場所: ${pref}${cityName}\nネイタル月: ${fmt(natalMoon)}\nハウス: プラシーダス\n\n`;
+    output += `場所: ${loc.label}\nネイタル月: ${fmt(natalMoon)}\nハウス: プラシーダス\n\n`;
 
-    const houses = swe.swe_houses(returnJd, city.lat, city.lng, 'P');
+    const houses = swe.swe_houses(returnJd, loc.lat, loc.lng, 'P');
     output += `■ 天体\n`;
     for (const [id, name] of PLANETS) {
       const r = swe.swe_calc_ut(returnJd, id, 256);
@@ -350,14 +388,14 @@ export function calcLunarReturn({ year, month, pref, cityName, natalPositions, n
  * シナストリー（相性）
  */
 export function calcSynastry({ a, b }) {
-  const cityA = cities[a.pref].find(c => c.name === a.cityName);
-  const cityB = cities[b.pref].find(c => c.name === b.cityName);
-  if (!cityA || !cityB) throw new Error('都市が見つかりません');
+  const locA = resolveLocation(a);
+  const locB = resolveLocation(b);
 
-  function calcPerson(p, city) {
-    const utcHour = p.hour - 9 + p.minute / 60;
+  function calcPerson(p, loc) {
+    const offset = p.utcOffset != null ? p.utcOffset : 9;
+    const utcHour = p.hour - offset + p.minute / 60;
     const jd = swe.swe_julday(p.year, p.month, p.day, utcHour, 1);
-    const houses = swe.swe_houses(jd, city.lat, city.lng, 'P');
+    const houses = swe.swe_houses(jd, loc.lat, loc.lng, 'P');
     const positions = [];
     for (const [id, name] of PLANETS) {
       const r = swe.swe_calc_ut(jd, id, 256);
@@ -366,8 +404,8 @@ export function calcSynastry({ a, b }) {
     return { positions, angles: { asc: houses.ascmc[0], mc: houses.ascmc[1] } };
   }
 
-  const personA = calcPerson(a, cityA);
-  const personB = calcPerson(b, cityB);
+  const personA = calcPerson(a, locA);
+  const personB = calcPerson(b, locB);
 
   let output = `【シナストリー】\n\n`;
   output += `■ Aのネイタル（${a.year}-${String(a.month).padStart(2,'0')}-${String(a.day).padStart(2,'0')}）\n`;

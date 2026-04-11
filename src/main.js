@@ -5,8 +5,9 @@ import { SPREADS } from './cards/spreads.js';
 import { checkJumpOut, draw } from './cards/engine.js';
 import { displayCards, generateResultText } from './cards/display.js';
 import { initSweph, isReady, calcNatal, calcYearly, calcTransit, calcLunarReturn, calcSynastry } from './astro/engine.js';
-import { buildAstroForm, getAstroInput } from './astro/wizard.js';
+import { buildAstroForm, getAstroInput, getLastNatalValues, refreshAllChartSelects } from './astro/wizard.js';
 import { displayAstroResult } from './astro/display.js';
+import { loadCharts, addChart, getSettings, updateSettings, exportData, importData } from './astro/storage.js';
 import { buildCardPrompt, buildAstroPrompt, requestInterpretation } from './llm/interpret.js';
 import { marked } from 'marked';
 
@@ -22,8 +23,12 @@ let currentDeck = null;
 let currentSpread = null;
 let currentAstroType = null;
 let natalData = null; // ネイタル計算結果のキャッシュ
+let lastNatalPrefix = null; // 最後にネイタル計算に使ったprefix
 
 function init() {
+  // localStorage からチャートデータを読み込み
+  loadCharts();
+
   if (isAuthenticated()) {
     showScreen('main-menu');
   }
@@ -35,6 +40,7 @@ function init() {
   setupResultActions();
   setupAstroMenu();
   setupAstroCalc();
+  setupAstroDataManagement();
 
   // sweph-wasmのバックグラウンド初期化
   initSweph().then(() => {
@@ -279,15 +285,22 @@ function setupAstroMenu() {
   });
 }
 
+function getOptionalBodies() {
+  const settings = getSettings();
+  return settings.optionalBodies || {};
+}
+
 function setupAstroCalc() {
   document.getElementById('astro-calc-btn').addEventListener('click', () => {
     try {
       const input = getAstroInput(currentAstroType);
+      const optionalBodies = getOptionalBodies();
       let resultText = '';
 
       switch (input.type) {
         case 'natal': {
-          const result = calcNatal(input);
+          lastNatalPrefix = 'natal';
+          const result = calcNatal({ ...input, optionalBodies });
           natalData = result;
           resultText = result.output;
           break;
@@ -298,8 +311,8 @@ function setupAstroCalc() {
           break;
         }
         case 'yearly': {
-          // まずネイタル計算
-          const natal = calcNatal(input.natal);
+          lastNatalPrefix = 'yr-natal';
+          const natal = calcNatal({ ...input.natal, optionalBodies });
           natalData = natal;
           resultText = calcYearly({
             year: input.year,
@@ -309,20 +322,24 @@ function setupAstroCalc() {
           break;
         }
         case 'monthly': {
-          const natal = calcNatal(input.natal);
+          lastNatalPrefix = 'lr-natal';
+          const natal = calcNatal({ ...input.natal, optionalBodies });
           natalData = natal;
           resultText = calcLunarReturn({
             year: input.year,
             month: input.month,
             pref: input.pref,
             cityName: input.cityName,
+            lat: input.lat,
+            lng: input.lng,
             natalPositions: natal.positions,
             natalAngles: natal.angles,
           });
           break;
         }
         case 'daily': {
-          const natal = calcNatal(input.natal);
+          lastNatalPrefix = 'tr-natal';
+          const natal = calcNatal({ ...input.natal, optionalBodies });
           natalData = natal;
           resultText = calcTransit({
             year: input.year,
@@ -338,6 +355,16 @@ function setupAstroCalc() {
       displayAstroResult(resultText);
       window.__lastAstroResult = { text: resultText, type: currentAstroType };
 
+      // 保存ボタン表示（シナストリー以外かつチャート選択でない場合）
+      const saveSection = document.getElementById('astro-save-section');
+      if (saveSection) {
+        if (currentAstroType !== 'synastry' && lastNatalPrefix) {
+          saveSection.classList.remove('hidden');
+        } else {
+          saveSection.classList.add('hidden');
+        }
+      }
+
       // 前回の解釈をリセット
       document.getElementById('astro-interpretation').classList.add('hidden');
       document.getElementById('astro-interpretation-text').innerHTML = '';
@@ -346,6 +373,70 @@ function setupAstroCalc() {
     } catch (err) {
       alert(`計算エラー: ${err.message}`);
     }
+  });
+}
+
+function setupAstroDataManagement() {
+  // チャート保存ボタン
+  const saveBtn = document.getElementById('astro-save-chart');
+  if (saveBtn) {
+    saveBtn.addEventListener('click', () => {
+      if (!lastNatalPrefix) return;
+      const vals = getLastNatalValues(lastNatalPrefix);
+      if (!vals) { alert('保存する入力データがありません'); return; }
+
+      const name = document.getElementById('astro-save-name')?.value || '';
+      const birthDate = `${vals.year}-${String(vals.month).padStart(2,'0')}-${String(vals.day).padStart(2,'0')}`;
+      const birthTime = `${String(vals.hour).padStart(2,'0')}:${String(vals.minute).padStart(2,'0')}`;
+
+      const location = {};
+      if (vals.lat != null) {
+        location.lat = vals.lat;
+        location.lng = vals.lng;
+        location.utcOffset = vals.utcOffset || 9;
+        location.label = `緯度${vals.lat}°, 経度${vals.lng}°`;
+      } else if (natalData?.loc) {
+        location.lat = natalData.loc.lat;
+        location.lng = natalData.loc.lng;
+        location.label = natalData.loc.label;
+        location.utcOffset = 9;
+      }
+
+      addChart({ name, birthDate, birthTime, location });
+      refreshAllChartSelects();
+      saveBtn.textContent = '保存しました';
+      setTimeout(() => { saveBtn.textContent = '保存'; }, 1500);
+    });
+  }
+
+  // エクスポートボタン
+  const exportBtn = document.getElementById('astro-export');
+  if (exportBtn) {
+    exportBtn.addEventListener('click', exportData);
+  }
+
+  // インポートボタン
+  const importBtn = document.getElementById('astro-import');
+  if (importBtn) {
+    importBtn.addEventListener('click', async () => {
+      const ok = await importData();
+      if (ok) {
+        refreshAllChartSelects();
+        importBtn.textContent = 'インポート完了';
+        setTimeout(() => { importBtn.textContent = 'インポート'; }, 1500);
+      }
+    });
+  }
+
+  // 小惑星オプションチェックボックス — 初期状態を復元 + 変更時に保存
+  const optBodies = getSettings().optionalBodies || {};
+  document.querySelectorAll('.asteroid-toggle').forEach(cb => {
+    if (optBodies[cb.dataset.body]) cb.checked = true;
+    cb.addEventListener('change', () => {
+      const settings = getSettings();
+      settings.optionalBodies[cb.dataset.body] = cb.checked;
+      updateSettings({ optionalBodies: settings.optionalBodies });
+    });
   });
 }
 

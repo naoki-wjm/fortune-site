@@ -223,6 +223,71 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
   .form-row, .form-row-3 { grid-template-columns: 1fr; }
 }
 
+/* 場所入力トグルボタン */
+.loc-toggle-btn {
+  margin: 0.4rem 0 0.6rem;
+  font-size: 0.85rem;
+  padding: 0.3em 0.8em;
+  background: transparent;
+  border-color: #4a3a5a;
+}
+
+/* 時刻不明チェック */
+.time-unknown-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: #a898b0;
+  margin: 0.3rem 0 0.6rem;
+  cursor: pointer;
+}
+.time-unknown-label input[type="checkbox"] {
+  accent-color: #8a6aaa;
+}
+
+/* 占星術オプション（details/summary） */
+.astro-options {
+  margin: 1rem 0;
+  border: 1px solid #3a3040;
+  border-radius: 8px;
+  padding: 0.6em;
+}
+.astro-options summary {
+  cursor: pointer;
+  color: #a898b0;
+  font-size: 0.9rem;
+}
+.asteroid-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin: 0.5rem 0;
+}
+.asteroid-options label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.9rem;
+  color: #c4b8d0;
+  cursor: pointer;
+}
+.asteroid-options input[type="checkbox"] {
+  accent-color: #8a6aaa;
+}
+.data-management {
+  margin: 0.5rem 0;
+}
+
+/* チャート保存セクション */
+.astro-save-section {
+  background: #1e1828;
+  border: 1px solid #3a3040;
+  border-radius: 8px;
+  padding: 0.8em;
+  margin: 0.8rem 0;
+}
+
 .site-footer {
   text-align: center;
   padding: 2rem 1rem 1rem;
