@@ -409,9 +409,18 @@ export function calcLunarReturn({ year, month, pref, cityName, lat, lng, natalPo
 /**
  * シナストリー（相性）
  */
-export function calcSynastry({ a, b }) {
+export function calcSynastry({ a, b, optionalBodies }) {
   const locA = resolveLocation(a);
   const locB = resolveLocation(b);
+
+  // 有効な小惑星IDリスト
+  const activeOptIds = [];
+  if (optionalBodies) {
+    const bodyMap = { chiron: 15, lilith: 12, ceres: 17, pallas: 18, juno: 19, vesta: 20 };
+    for (const [key, id] of Object.entries(bodyMap)) {
+      if (optionalBodies[key]) activeOptIds.push(id);
+    }
+  }
 
   function calcPerson(p, loc) {
     const offset = p.utcOffset != null ? p.utcOffset : 9;
@@ -420,6 +429,11 @@ export function calcSynastry({ a, b }) {
     const houses = swe.swe_houses(jd, loc.lat, loc.lng, 'P');
     const positions = [];
     for (const [id, name] of PLANETS) {
+      const r = swe.swe_calc_ut(jd, id, 256);
+      positions.push({ id, name, lon: r[0], spd: r[3], house: getHouse(r[0], houses.cusps) });
+    }
+    for (const [id, name] of OPTIONAL_BODIES) {
+      if (!activeOptIds.includes(id)) continue;
       const r = swe.swe_calc_ut(jd, id, 256);
       positions.push({ id, name, lon: r[0], spd: r[3], house: getHouse(r[0], houses.cusps) });
     }

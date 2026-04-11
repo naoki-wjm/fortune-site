@@ -306,7 +306,7 @@ function setupAstroCalc() {
           break;
         }
         case 'synastry': {
-          const result = calcSynastry(input);
+          const result = calcSynastry({ ...input, optionalBodies });
           resultText = result.output;
           break;
         }
