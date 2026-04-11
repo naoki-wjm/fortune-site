@@ -278,6 +278,11 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
 .data-management {
   margin: 0.5rem 0;
 }
+.data-management-note {
+  font-size: 0.8rem;
+  color: #8a7a9a;
+  margin: 0.3rem 0;
+}
 
 /* チャート保存セクション */
 .astro-save-section {
