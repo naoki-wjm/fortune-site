@@ -276,7 +276,7 @@ function calcYearlyRange(startJd, endJd, natalPositions, natalAngles) {
 /**
  * トランジット（日運）
  */
-export function calcTransit({ year, month, day, natalPositions, natalAngles }) {
+export function calcTransit({ year, month, day, natalPositions, natalAngles, optionalBodies }) {
   const jd = swe.swe_julday(year, month, day, 12 - 9, 1);
 
   let output = `【トランジット】${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}\n\n`;
@@ -290,6 +290,21 @@ export function calcTransit({ year, month, day, natalPositions, natalAngles }) {
     const r = swe.swe_calc_ut(jd, id, 256);
     transitPos.push({ id, name, lon: r[0], spd: r[3] });
     output += `${name} ${fmt(r[0])}${r[3] < 0 ? ' R' : ''}\n`;
+  }
+
+  // 小惑星のトランジット位置
+  if (optionalBodies) {
+    const bodyMap = { chiron: 15, lilith: 12, ceres: 17, pallas: 18, juno: 19, vesta: 20 };
+    const activeIds = Object.entries(bodyMap).filter(([key]) => optionalBodies[key]).map(([, id]) => id);
+    if (activeIds.length > 0) {
+      output += `\n`;
+      for (const [id, name] of OPTIONAL_BODIES) {
+        if (!activeIds.includes(id)) continue;
+        const r = swe.swe_calc_ut(jd, id, 256);
+        transitPos.push({ id, name, lon: r[0], spd: r[3] });
+        output += `${name} ${fmt(r[0])}${r[3] < 0 ? ' R' : ''}\n`;
+      }
+    }
   }
 
   output += `\n■ ネイタルへのアスペクト\n`;
@@ -312,7 +327,7 @@ export function calcTransit({ year, month, day, natalPositions, natalAngles }) {
 /**
  * ルナリターン（月運）
  */
-export function calcLunarReturn({ year, month, pref, cityName, lat, lng, natalPositions, natalAngles }) {
+export function calcLunarReturn({ year, month, pref, cityName, lat, lng, natalPositions, natalAngles, optionalBodies }) {
   const loc = resolveLocation({ pref, cityName, lat, lng });
 
   const natalMoon = natalPositions.find(p => p.name === '月').lon;
@@ -357,7 +372,14 @@ export function calcLunarReturn({ year, month, pref, cityName, lat, lng, natalPo
 
     const houses = swe.swe_houses(returnJd, loc.lat, loc.lng, 'P');
     output += `■ 天体\n`;
-    for (const [id, name] of PLANETS) {
+    const lrBodies = [...PLANETS];
+    if (optionalBodies) {
+      const bodyMap = { chiron: 15, lilith: 12, ceres: 17, pallas: 18, juno: 19, vesta: 20 };
+      for (const [id, name] of OPTIONAL_BODIES) {
+        if (optionalBodies[Object.entries(bodyMap).find(([, v]) => v === id)?.[0]]) lrBodies.push([id, name]);
+      }
+    }
+    for (const [id, name] of lrBodies) {
       const r = swe.swe_calc_ut(returnJd, id, 256);
       const house = getHouse(r[0], houses.cusps);
       output += `${name} ${fmt(r[0])} (${house}H)${r[3] < 0 ? ' R' : ''}\n`;
@@ -366,7 +388,7 @@ export function calcLunarReturn({ year, month, pref, cityName, lat, lng, natalPo
 
     output += `\n■ ネイタルへのアスペクト\n`;
     const aspects = [];
-    for (const [id, name] of PLANETS) {
+    for (const [id, name] of lrBodies) {
       const r = swe.swe_calc_ut(returnJd, id, 256);
       for (const n of natalPositions) {
         const asp = getAspect(r[0], n.lon, TRANSIT_ORB);

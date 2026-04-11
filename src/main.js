@@ -314,9 +314,10 @@ function setupAstroCalc() {
           lastNatalPrefix = 'yr-natal';
           const natal = calcNatal({ ...input.natal, optionalBodies });
           natalData = natal;
+          const allYrPositions = [...natal.positions, ...natal.optPositions];
           resultText = calcYearly({
             year: input.year,
-            natalPositions: natal.positions,
+            natalPositions: allYrPositions,
             natalAngles: natal.angles,
           });
           break;
@@ -325,6 +326,7 @@ function setupAstroCalc() {
           lastNatalPrefix = 'lr-natal';
           const natal = calcNatal({ ...input.natal, optionalBodies });
           natalData = natal;
+          const allLrPositions = [...natal.positions, ...natal.optPositions];
           resultText = calcLunarReturn({
             year: input.year,
             month: input.month,
@@ -332,8 +334,9 @@ function setupAstroCalc() {
             cityName: input.cityName,
             lat: input.lat,
             lng: input.lng,
-            natalPositions: natal.positions,
+            natalPositions: allLrPositions,
             natalAngles: natal.angles,
+            optionalBodies,
           });
           break;
         }
@@ -341,12 +344,14 @@ function setupAstroCalc() {
           lastNatalPrefix = 'tr-natal';
           const natal = calcNatal({ ...input.natal, optionalBodies });
           natalData = natal;
+          const allTrPositions = [...natal.positions, ...natal.optPositions];
           resultText = calcTransit({
             year: input.year,
             month: input.month,
             day: input.day,
-            natalPositions: natal.positions,
+            natalPositions: allTrPositions,
             natalAngles: natal.angles,
+            optionalBodies,
           });
           break;
         }
