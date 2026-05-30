@@ -23,8 +23,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    const ALLOWED_MODELS = ['claude-opus-4-6', 'claude-sonnet-4-6'];
-    const selectedModel = ALLOWED_MODELS.includes(model) ? model : 'claude-opus-4-6';
+    const ALLOWED_MODELS = ['claude-opus-4-8', 'claude-sonnet-4-6'];
+    const selectedModel = ALLOWED_MODELS.includes(model) ? model : 'claude-opus-4-8';
 
     const stream = client.messages.stream({
       model: selectedModel,

@@ -59,7 +59,7 @@ export function buildAstroPrompt(resultText, astroType) {
  * onChunk(fullText) が新しいチャンクを受信するたびに呼ばれる（累積テキスト）
  * 完了時に全文を返す
  */
-export async function requestInterpretation(prompt, model = 'claude-opus-4-6', onChunk) {
+export async function requestInterpretation(prompt, model = 'claude-opus-4-8', onChunk) {
   const password = getPassword();
   const res = await fetch('/api/interpret', {
     method: 'POST',

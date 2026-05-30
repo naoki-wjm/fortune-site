@@ -212,7 +212,7 @@ function setupResultActions() {
       }
     });
   }
-  setupCardInterpretBtn('interpret-opus-btn', 'claude-opus-4-6', 'Opus');
+  setupCardInterpretBtn('interpret-opus-btn', 'claude-opus-4-8', 'Opus');
   setupCardInterpretBtn('interpret-sonnet-btn', 'claude-sonnet-4-6', 'Sonnet');
 
   // 解釈コピー（カード）
@@ -255,7 +255,7 @@ function setupResultActions() {
       }
     });
   }
-  setupAstroInterpretBtn('interpret-astro-opus-btn', 'claude-opus-4-6', 'Opus');
+  setupAstroInterpretBtn('interpret-astro-opus-btn', 'claude-opus-4-8', 'Opus');
   setupAstroInterpretBtn('interpret-astro-sonnet-btn', 'claude-sonnet-4-6', 'Sonnet');
 
   // 解釈コピー（占星術）
